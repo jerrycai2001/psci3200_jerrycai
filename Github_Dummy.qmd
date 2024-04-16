@@ -1,0 +1,50 @@
+---
+title: "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset"
+author: "Jerry Cai"
+
+date: last-modified
+institute: "University of Pennsylvania"
+toc: true
+
+format:
+  html: 
+    self-contained: true
+
+editor: source
+---
+
+## Hypothesis
+
+I want to understand how economic wellness (increase in income, debt rate, consumer spending) is affected by the prevalence and frequency of digital gig economy. 
+
+I hypothesize that countries where digital and gig economy activities are higher are associated with greater levels of economic wellness. People who participate in the digital gig economy experience greater economic wellness than those who do not. 
+
+## Rationale
+Gig economy work is supplementary, which allows for more opportunities to match labor supply with demand, creating additional value transactions. 
+
+Digital gig economy work also enables increased flexibility, as location constrained individuals such as mothers caring for children, handicapped individuals are able to perform digital tasks that brings value transfer. 
+
+Digital gig economy work allows for flexibility, which helps individuals prioritize social and health commitments during the working day, while not seriously jeopardizing their long-term economic prospects. 
+
+## Questions
+Does the type of digital gig work affect the magnitude of economic wellness benefits experienced?
+
+How can we separate the confounding effects of highly-developed digital infrastructure from the direct effects of digital gig work that is flexible and accessible?
+
+Does economic wellness translate to overall health/human wellness highlighted in the SDGs?
+
+Is digital gig work available fairly/reasonably available to everyone with internet access, or are there asymmetric market dynamics at play that skew gigs available and the distribution of digital gig work opportunities?
+
+
+## Datasets:
+Oxford Labor Index Information (http://onlinelabourobservatory.org/oli-demand/)
+OLI FigShare Dataset (https://figshare.com/articles/dataset/Online_Labour_Index_Measuring_the_Online_Gig_Economy_for_Policy_and_Research/3761562?file=25560452)
+
+
+## Appendix:
+
+Gad Allon - Behavioral and Economic Drivers of Gig Economy (https://pubsonline.informs.org/doi/abs/10.1287/msom.2023.1191?journalCode=msom)
+
+
+
+The `echo: false` option disables the printing of code (only output is displayed).
