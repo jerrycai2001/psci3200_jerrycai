@@ -1,0 +1,9 @@
+---
+title: "psci3200_jerrycai_quarto"
+---
+
+This is a Quarto website.
+
+```{r}
+1 + 1 + 3
+```
