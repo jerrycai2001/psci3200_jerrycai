@@ -31,3 +31,166 @@ library(gt)
 library(modelsummary)
 
 ```
+
+
+# Introduction
+Widespread adoption of online marketplace platforms and artificial intelligence have created tremendous economic opportunities for freelance gig workers, enabling remote work and flexible work arrangements. However, an equivalent amount of skilled labor is being replaced by technological systems, creating an entirely new employment landscape to navigate for creative, cultural, and entrepreneurial sectors (Sytsma, 2023). The World Economic Forum has defined the digital economy as “With digital knowledge and information as key production factors, modern information networks as important carriers, and information and communication technology as an essential component of increasing productivity through economic activities”. Nowadays, the digital economy represents an emerging industrial revolution that is reliant on high-tech digital technology and rapidly expanded globally (Zhang).  
+
+Although the opportunities of digital economy are expanding, the inequality within countries has become worse. According to the United Nations, 71 percent of the world’s population live in countries where inequality has grown. 
+Inequalities of opportunity affect a person’s life expectancy and access to basic services such as healthcare, education, water, and sanitation. These inequalities also entrench uncertainty, vulnerability and insecurity, undermines trust in institutions and government, increases social discord and tensions and trigger violence and conflicts. As economic and financial systems become increasingly digitized, an individual’s overall wellness becomes increasingly tied to their financial stability. For the traditional artisanal communities that are not fully technologically integrated with global financial systems,  such a change creates inevitable challenges that threaten artisan and students’ future economic wellness (United Nations).
+
+In spite of the growing economic disparities across developing nations, participation in the online gig economy has proven effective for certain groups to improve access to crucial economic opportunities, while maintaining geographic and temporal accessibility. According to Huang et al (2019), the growth of the gig economy has been partly attributed to technological advancements that enable flexible work environments, along with economic downturns, and associated financial stressors in the offline economy. Huang et al (2019) focused on how unemployment in the traditional labor market is likely to have a significant impact on the supply of labor in online markets be-cause associated financial stressors (i.e., loss of in-come) provide sufficient incentive for unemployed and underemployed workers to engage in or experiment with a new form of employment.  
+
+When it comes to understanding factors that moderate the relationship between offline unemployment and the supply of labor in online gig economy, one must consider key features that characterize the workers in the local labor market (e.g., population demographics and geographic dispersion of county residents’ social connections) and those characterizing the geographic context (e.g., internet connectivity). These moderating factors help us to better understand heterogeneity in the relationship between unemployment and participation in the online labor markets. (Huang 2019). Online labor markets involve work that is easily outsourced and delivered online, such as software development and data entry. Accordingly, workers recently laid off from positions in information technology (IT)-related industries—who we would expect can perform virtual work that does not require physically being on site and that also requires relatively little interpersonal interaction—should be particularly likely to move online when faced with job loss.
+
+The existing body of research seeks to understand the drivers of the gig economy would enable effective policy efforts that increase the expansion gig economy opportunities and its overall efficacy improving financial stability for more people. However, there seems to be less substantial understanding of the effects of online gig economy participation on an individual’s overall financial wellness and economic outcomes. There seems to be strong promise for governments to bolster digital gig economy employment opportunities to effectively improve financial stability for vulnerable groups. Findings that motivate the consequential effects of digital gig economic participation on financial stability can translate into effective policy for affecting financial health with increased digital gig economy participation.  In this study, I aim to investigate the effective strength of gig economy participation on individual financial wellness and stability. 
+
+# Theory and Hypotheses
+
+## Hypothesis 1: Countries with greater digital gig economy participation have greater financial wellness. 
+
+## Hypothesis 2: Countries with high access to internet technologies and higher overall wage/salaried employment will experience the highest frequency of digital gig platform usage.
+
+Rationale 1: Online gig/freelance work platforms are more efficient mechanisms of value creation, enabling supply to quickly meet demand. Greater efficiency takes less energy and time to create economic value, allowing for more overall value creation and therefore long-term freedom and flexibility to pursue activities that create greater fulfillment.
+
+Marginal economic earnings measures the comparative difference in outcomes between digital gig economy workers. Ex. A gig worker in Africa would derive greater marginal benefit from economic earnings than a gig worker in the US. Greater economic disparities/instability in a given country will cause more individuals to pursue freelance/gig marketplace platform work, since the marginal benefit is comparatively higher. In countries with lower wage/salary employment rates, gig platform employment is the next best alternative for economic opportunities. Additionally, countries of greater information technology (IT) are correlated with greater technology investment, growth and overall ecosystem dynamics that enable efficient value creation and exchange. 
+
+Rationale 2:
+A report by Manyika et al.(2016) that describes participation in the gig economy, documenting 160+ million individuals participate in this sector, estimate that a substantial fraction (30%) of workers earn income via gig workout of necessity (because of a lack of better employment options). Specifically, we estimate that, on average, a 1% increase in a county’s reported unemployment rate is associated with an approximate 21.8% increase in the number of residents active on the platform and an approximate 15% increase in the total volume of bids submitted by those residents, translating to approximately $1.8 million in additional annual wages earned on the platform
+
+Specifically, counties with better internet access, with residents that have a lower proportion of geographically proximate social connections, and with a younger, more female, and more educated population are most likely to experience gig-economy opt-in following local unemployment shocks. Importantly, whereas some of these factors may be influenced by policy makers (e.g., education levels may be increased via training initiatives, and internet access may be improved through investment in internet infrastructure)
+
+# Data Description
+
+
+
+The variables I will examine in my dataset combined_data are:
+
+totalSupply, totalDemand
+adjIncomeCapita
+commExports, serviceICTExports
+totalUnemployment, totalWageSalWorkers
+
+From the OLI dataset, variables I will look at the total daily new listings and filled listings across the 5 largest online gig work sites: Freelancer.com, Upwork.com, Guru.com, Peopleperhour.com, Mturk.com. Using an AWS web scraper method, the OLI researchers sampled the sites in 24 hour intervals to observe newly added job postings and filled job postings. Each posting’s geographic information and employment sector were noted. 
+ 
+Annual total count : annualTotalCount
+Software development : softwareDev
+Writing and translation : writingTranslation
+Clerical and data entry : clericalDataEntry
+Creative and multimedia : creativeMultimedia
+Professional services : professionalServices 
+Sales and marketing support : salesMarketingSupport
+
+From the WHO dataset, variables I will look at are
+
+Financial Wellness:  adjusted income per capita (adjIncomeCapita), 
+Gig Economy Participation:  Gig economy supply (totalSupply), Gig economy demand (totalSupply)
+Internet accessibility and infrastructure: service communications/technology exports (serviceICTExports), 
+Total employment rates of wage/salaried workers: total unemployment (totalUnemployment)
+
+
+To test hypothesis 1, I chose variables that closely correlated to digital gig economy participation have greater financial wellness, which are  gig economy participation count (gigEconCount) and adjusted income per capita (adjIncomeCapita). Gig economic participation count is calculated via survey data from the OLI database, which surveyed workers on digital platform about their country of residence and which day this interaction was recorded. Such was replicated each day over 4 years, which serve to reflect to total amount of gig economy activity in a given year. Adjusted income per capita is a standard WHO development indicator, which is mean income per capita adjusted into USD. 
+
+For further empirical extension in hypothesis 2, I chose variables that are effectors of gig economy participation count (gigEconCount), such as accessibility to digital technologies and pressures from external wage/salaried employment opportunities ( totalWageSalWorkersPercent). I will note there is a possible interaction between the later 2 variables.
+
+## Loading in dataset
+```{r}
+
+# Write combined_data as csv
+input_file_path_combined <- "/Users/jycai/Documents/GitHub/psci3200_jerrycai/combined_data.csv"
+
+# write_csv(combined_data, input_file_path_combined)
+
+# Read combined_data csv
+combined_data <- read_csv(input_file_path_combined)
+
+# Create a named vector for the mappings
+code_to_name <- c(
+  "NY.ADJ.NNTY.PC.CD" = "adjIncomeCapita",
+  "BX.GSR.NFSV.CD" = "serviceICTExports",
+  "SL.UEM.TOTL.ZS" = "totalUnemployment",
+  "totalSupply" = "totalSupply",
+  "totalDemand" = "totalDemand"
+)
+
+```
+
+## Data variables description
+```{r}
+
+combined_data_2 <- combined_data %>%
+  filter(indicator %in% c("adjIncomeCapita", "serviceICTExports", "totalUnemployment", "totalDemand", "totalSupply"))
+  # filter(country %in% c("Chile", "Argentina", "Brazil", "Bolivia", "Peru", "Venezuela", "Uruguay", "Ecuador", "Mexico", "Panama", "Nicaragua", "Costa Rica", "Honduras"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2_wide <- combined_data_2 %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(adjIncomeCapita) & !is.na(serviceICTExports)& !is.na(totalUnemployment)& !is.na(totalDemand) & !is.na(totalSupply))
+  
+# combined_data_2a_wide <- combined_data_2a_wide[combined_data_2a_wide$totalDemand <= 2.5e+05, ]
+
+summary_df <- combined_data_2_wide %>%
+  summarise(
+    Mean_adjIncomeCapita = mean(adjIncomeCapita, na.rm = TRUE),
+    Min_adjIncomeCapita = min(adjIncomeCapita, na.rm = TRUE),
+    Max_adjIncomeCapita = max(adjIncomeCapita, na.rm = TRUE),
+    SD_adjIncomeCapita = sd(adjIncomeCapita, na.rm = TRUE),
+
+    Mean_serviceICTExports = mean(serviceICTExports, na.rm = TRUE),
+    Min_serviceICTExports = min(serviceICTExports, na.rm = TRUE),
+    Max_serviceICTExports = max(serviceICTExports, na.rm = TRUE),
+    SD_serviceICTExports = sd(serviceICTExports, na.rm = TRUE),
+
+    Mean_totalUnemployment = mean(totalUnemployment, na.rm = TRUE),
+    Min_totalUnemployment = min(totalUnemployment, na.rm = TRUE),
+    Max_totalUnemployment = max(totalUnemployment, na.rm = TRUE),
+    SD_totalUnemployment = sd(totalUnemployment, na.rm = TRUE),
+
+    Mean_totalSupply = mean(totalSupply, na.rm = TRUE),
+    Min_totalSupply = min(totalSupply, na.rm = TRUE),
+    Max_totalSupply = max(totalSupply, na.rm = TRUE),
+    SD_totalSupply = sd(totalSupply, na.rm = TRUE),
+
+    Mean_totalDemand = mean(totalDemand, na.rm = TRUE),
+    Min_totalDemand = min(totalDemand, na.rm = TRUE),
+    Max_totalDemand = max(totalDemand, na.rm = TRUE),
+    SD_totalDemand = sd(totalDemand, na.rm = TRUE)
+  )
+
+# Now, you can create a GT table directly from this summary_df
+summary_table <- gt(summary_df) %>%
+  tab_header(title = "Summary Statistics for Economic Data")
+
+# Print or view the table in RStudio's Viewer pane or save as HTML
+print(summary_table)
+
+```
+
+# Research Design
+
+```{r}
+
+```
+
+$$
+\text{adjIncomeCapita} = \beta_0 + \beta_1 \times \text{totalSupply} + \epsilon
+$$
+$$
+\text{adjIncomeCapita} = \beta_0 + \beta_1 \times \text{totalDemand} + \epsilon
+$$
+
+Additive model
+$$
+\text{totalSupply} = \beta_0 + \beta_1 \times \text{serviceICTExports} + \beta_2 \times \text{totalUnemployment} +\epsilon
+$$
+Interaction model
+$$
+\text{totalSupply} = \beta_0 + \beta_1 \times \text{serviceICTExports} \times \beta_2 \times \text{totalUnemployment} +\epsilon
+$$
+
+# Findings
+
+# Empirical Extension
+
+# Discussion and Policy Implications
+
