@@ -1,0 +1,254 @@
+---
+title: "Final Project (Due Wednesday, May 10th)"
+author: "Jerry Cai"
+institute: "University of Pennsylvania"
+date: last-modified
+toc: true
+
+bibliography: references.bib
+
+format: 
+  html:
+    self-contained: true
+
+editor: source
+---
+
+# Final Project
+
+Jerry Cai
+
+# R Code
+
+```{r}
+library(ggplot2)
+library(readr)
+library(ggdag)
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(gt)
+library(modelsummary)
+
+```
+
+# Variable names - Codebook format:
+
+Annual total count : annualTotalCount
+Software development : softwareDev
+Writing and translation : writingTranslation
+Clerical and data entry : clericalDataEntry
+Creative and multimedia : creativeMultimedia
+Professional services : professionalServices 
+Sales and marketing support : salesMarketingSupport
+
+
+
+# Data 1 Path (OLI)
+
+```{r}
+
+# Write combined_data as csv
+input_file_path_combined <- "/Users/jycai/Documents/GitHub/psci3200_jerrycai/combined_data.csv"
+
+# write_csv(combined_data, input_file_path_combined)
+
+# Read combined_data csv
+combined_data <- read_csv(input_file_path_combined)
+
+# Create a named vector for the mappings
+code_to_name <- c(
+  "NY.ADJ.NNTY.CD" = "adjIncome",
+  "NY.ADJ.NNTY.PC.CD" = "adjIncomeCapita",
+  "BX.GSR.CMCP.ZS" = "commExports",
+  "BX.GSR.CCIS.ZS" = "serviceICTExportsPercent",
+  "BX.GSR.CCIS.CD" = "commExports",
+  "BX.GSR.NFSV.CD" = "serviceICTExports",
+  "SL.UEM.TOTL.ZS" = "totalUnemployment",
+  "SL.EMP.WORK.ZS" = "totalWageSalWorkers",
+  "gigEconCount" = "gigEconCount"
+)
+
+```
+
+
+# Model_2_a: adjIncomeCapita` ~ `totalDemand
+```{r}
+# Model_2_a
+
+# Check if both indicators are available for each country and year
+combined_data_2a <- combined_data %>%
+  filter(indicator %in% c("adjIncomeCapita", "totalDemand")) %>%
+  filter(country %in% c("Chile", "Argentina", "Brazil", "Bolivia", "Peru", "Venezuela", "Uruguay", "Ecuador", "Mexico", "Panama", "Nicaragua", "Costa Rica", "Honduras"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2a_wide <- combined_data_2a %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(adjIncomeCapita) & !is.na(totalDemand))
+  
+combined_data_2a_wide <- combined_data_2a_wide[combined_data_2a_wide$totalDemand <= 2.5e+05, ]
+
+# Run the regression model
+regression_model_2_a <- lm(`adjIncomeCapita` ~ `totalDemand`, data = combined_data_2a_wide)
+
+# Display the summary of the regression model
+summary(regression_model_2_a)
+
+# Plot diagnostics
+plot(regression_model_2_a)
+
+# Create a scatter plot
+library(ggplot2)
+
+scatter_plot_2_a <- ggplot(combined_data_2a_wide, aes(x = totalDemand, y = adjIncomeCapita )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of gig totalDemand on adjIncomeCapita",
+       x = "totalDemand",
+       y = "adjIncomeCapita") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_a)
+
+```
+
+# Model_2_b: adjIncomeCapita` ~ `totalSupply
+```{r}
+# Model_2_b
+
+# Check if both indicators are available for each country and year
+combined_data_2b <- combined_data %>%
+  filter(indicator %in% c("adjIncomeCapita", "totalSupply"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2b_wide <- combined_data_2b %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(adjIncomeCapita) & !is.na(totalSupply))
+  
+combined_data_2b_wide <- combined_data_2b_wide[combined_data_2b_wide$totalSupply <= 1e+06, ]
+
+# Run the regression model
+regression_model_2_b <- lm(`adjIncomeCapita` ~ `totalSupply`, data = combined_data_2b_wide)
+
+# Display the summary of the regression model
+summary(regression_model_2_b)
+
+# Plot diagnostics
+plot(regression_model_2_b)
+
+# Create a scatter plot
+library(ggplot2)
+
+scatter_plot_2_b <- ggplot(combined_data_2b_wide, aes(x = totalSupply, y = adjIncomeCapita )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of gig totalDemand on adjIncomeCapita",
+       x = "totalSupply",
+       y = "adjIncomeCapita") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_b)
+
+```
+
+
+# Model_2_c: totalDemand ~ serviceICTExports + totalWageSalWorkers
+```{r}
+# Model_2_c
+
+# Check if both indicators are available for each country and year
+combined_data_2c <- combined_data %>%
+  filter(indicator %in% c("totalDemand", "serviceICTExports", "totalWageSalWorkers" )) %>%
+  filter(country %in% c("Chile", "Argentina", "Brazil", "Bolivia", "Peru", "Venezuela", "Uruguay", "Ecuador", "Mexico", "Panama", "Nicaragua", "Costa Rica", "Honduras"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2c_wide <- combined_data_2c %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(totalDemand) & !is.na(serviceICTExports) & !is.na(totalWageSalWorkers))
+  
+combined_data_2c_wide <- combined_data_2c_wide[combined_data_2c_wide$totalDemand <= 1e+06, ]
+
+# Run the regression model
+regression_model_2_c <- lm(`totalDemand` ~ `serviceICTExports` + `totalWageSalWorkers`, data = combined_data_2c_wide)
+
+# Display the summary of the regression model
+summary(regression_model_2_c)
+
+# Plot diagnostics
+plot(regression_model_2_c)
+
+# Create a scatter plot
+library(ggplot2)
+
+scatter_plot_2_c <- ggplot(combined_data_2c_wide, aes(x = serviceICTExports, y = totalDemand )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of serviceICTExports on gig economy totalDemand",
+       x = "serviceICTExports",
+       y = "totalDemand") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_c)
+
+scatter_plot_2_c_i <- ggplot(combined_data_2c_wide, aes(x = totalWageSalWorkers, y = totalDemand )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of totalWageSalWorkers on gig economy totalDemand",
+       x = "totalWageSalWorkers",
+       y = "totalDemand") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_c_i)
+
+```
+
+
+# Model_2_d: totalSupply ~ serviceICTExports + totalUnemployment
+```{r}
+# Model_2_d
+
+# Check if both indicators are available for each country and year
+combined_data_2d <- combined_data %>%
+  filter(indicator %in% c("totalSupply", "serviceICTExports", "totalUnemployment" )) %>%
+  filter(country %in% c("Chile", "Argentina", "Brazil", "Bolivia", "Peru", "Venezuela", "Uruguay", "Ecuador", "Mexico", "Panama", "Nicaragua", "Costa Rica", "Honduras"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2d_wide <- combined_data_2d %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(totalSupply) & !is.na(serviceICTExports) & !is.na(totalUnemployment))
+  
+combined_data_2d_wide <- combined_data_2d_wide[combined_data_2d_wide$totalSupply <= 1e+06, ]
+
+# Run the regression model
+regression_model_2_d <- lm(`totalSupply` ~ `serviceICTExports` + `totalUnemployment`, data = combined_data_2d_wide)
+
+# Display the summary of the regression model
+summary(regression_model_2_d)
+
+# Plot diagnostics
+plot(regression_model_2_d)
+
+# Create a scatter plot
+library(ggplot2)
+
+scatter_plot_2_d <- ggplot(combined_data_2d_wide, aes(x = serviceICTExports, y = totalSupply )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of serviceICTExports on gig economy totalDemand",
+       x = "serviceICTExports",
+       y = "totalSupply") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_d)
+
+scatter_plot_2_d_i <- ggplot(combined_data_2d_wide, aes(x = totalUnemployment, y = totalSupply )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of totalWageSalWorkers on gig economy totalDemand",
+       x = "totalUnemployment",
+       y = "totalSupply") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_d_i)
+
+```

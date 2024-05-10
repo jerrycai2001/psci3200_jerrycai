@@ -12,5 +12,110 @@
     "title": "About",
     "section": "",
     "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "finalProjectSubmission.html",
+    "href": "finalProjectSubmission.html",
+    "title": "Final Project (Due Wednesday, May 10th)",
+    "section": "",
+    "text": "Final Project\nJerry Cai\n\n\nR Code\n\nlibrary(ggplot2)\nlibrary(readr)\nlibrary(ggdag)\n\n\nAttaching package: 'ggdag'\n\n\nThe following object is masked from 'package:stats':\n\n    filter\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ stringr   1.5.0\n✔ forcats   1.0.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n\n\n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks ggdag::filter(), stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(tidyr)\nlibrary(dplyr)\nlibrary(gt)\nlibrary(modelsummary)\n\n\n\nVariable names - Codebook format:\nAnnual total count : annualTotalCount Software development : softwareDev Writing and translation : writingTranslation Clerical and data entry : clericalDataEntry Creative and multimedia : creativeMultimedia Professional services : professionalServices Sales and marketing support : salesMarketingSupport\n\n\nData 1 Path (OLI)\n\n# Write combined_data as csv\ninput_file_path_combined &lt;- \"/Users/jycai/Documents/GitHub/psci3200_jerrycai/combined_data.csv\"\n\n# write_csv(combined_data, input_file_path_combined)\n\n# Read combined_data csv\ncombined_data &lt;- read_csv(input_file_path_combined)\n\nRows: 11357 Columns: 4\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (2): country, indicator\ndbl (2): value, year\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n# Create a named vector for the mappings\ncode_to_name &lt;- c(\n  \"NY.ADJ.NNTY.CD\" = \"adjIncome\",\n  \"NY.ADJ.NNTY.PC.CD\" = \"adjIncomeCapita\",\n  \"BX.GSR.CMCP.ZS\" = \"commExports\",\n  \"BX.GSR.CCIS.ZS\" = \"serviceICTExportsPercent\",\n  \"BX.GSR.CCIS.CD\" = \"commExports\",\n  \"BX.GSR.NFSV.CD\" = \"serviceICTExports\",\n  \"SL.UEM.TOTL.ZS\" = \"totalUnemployment\",\n  \"SL.EMP.WORK.ZS\" = \"totalWageSalWorkers\",\n  \"gigEconCount\" = \"gigEconCount\"\n)\n\n\n\nModel_2_a: adjIncomeCapita~totalDemand\n\n# Model_2_a\n\n# Check if both indicators are available for each country and year\ncombined_data_2a &lt;- combined_data %&gt;%\n  filter(indicator %in% c(\"adjIncomeCapita\", \"totalDemand\")) %&gt;%\n  filter(country %in% c(\"Chile\", \"Argentina\", \"Brazil\", \"Bolivia\", \"Peru\", \"Venezuela\", \"Uruguay\", \"Ecuador\", \"Mexico\", \"Panama\", \"Nicaragua\", \"Costa Rica\", \"Honduras\"))\n\n# Reshaping the data to have one row per country-year with separate columns for each indicator\ncombined_data_2a_wide &lt;- combined_data_2a %&gt;%\n  pivot_wider(names_from = indicator, values_from = value) %&gt;%\n  filter(!is.na(adjIncomeCapita) & !is.na(totalDemand))\n  \ncombined_data_2a_wide &lt;- combined_data_2a_wide[combined_data_2a_wide$totalDemand &lt;= 2.5e+05, ]\n\n# Run the regression model\nregression_model_2_a &lt;- lm(`adjIncomeCapita` ~ `totalDemand`, data = combined_data_2a_wide)\n\n# Display the summary of the regression model\nsummary(regression_model_2_a)\n\n\nCall:\nlm(formula = adjIncomeCapita ~ totalDemand, data = combined_data_2a_wide)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-5720.1 -3620.5  -930.6  3602.5  9150.9 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 7.254e+03  7.333e+02   9.892 4.63e-14 ***\ntotalDemand 1.740e-02  2.633e-02   0.661    0.511    \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 4401 on 58 degrees of freedom\nMultiple R-squared:  0.007473,  Adjusted R-squared:  -0.00964 \nF-statistic: 0.4367 on 1 and 58 DF,  p-value: 0.5113\n\n# Plot diagnostics\nplot(regression_model_2_a)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n# Create a scatter plot\nlibrary(ggplot2)\n\nscatter_plot_2_a &lt;- ggplot(combined_data_2a_wide, aes(x = totalDemand, y = adjIncomeCapita )) +\n  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha\n  labs(title = \"Effect of gig totalDemand on adjIncomeCapita\",\n       x = \"totalDemand\",\n       y = \"adjIncomeCapita\") +\n  theme_minimal()  # Use a minimal theme for a cleaner look\n\n# Display the plot\nprint(scatter_plot_2_a)\n\n\n\n\n\n\n\n\n\n\nModel_2_b: adjIncomeCapita~totalSupply\n\n# Model_2_b\n\n# Check if both indicators are available for each country and year\ncombined_data_2b &lt;- combined_data %&gt;%\n  filter(indicator %in% c(\"adjIncomeCapita\", \"totalSupply\"))\n\n# Reshaping the data to have one row per country-year with separate columns for each indicator\ncombined_data_2b_wide &lt;- combined_data_2b %&gt;%\n  pivot_wider(names_from = indicator, values_from = value) %&gt;%\n  filter(!is.na(adjIncomeCapita) & !is.na(totalSupply))\n  \ncombined_data_2b_wide &lt;- combined_data_2b_wide[combined_data_2b_wide$totalSupply &lt;= 1e+06, ]\n\n# Run the regression model\nregression_model_2_b &lt;- lm(`adjIncomeCapita` ~ `totalSupply`, data = combined_data_2b_wide)\n\n# Display the summary of the regression model\nsummary(regression_model_2_b)\n\n\nCall:\nlm(formula = adjIncomeCapita ~ totalSupply, data = combined_data_2b_wide)\n\nResiduals:\n   Min     1Q Median     3Q    Max \n-21004 -10683  -7419   3932  57259 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 1.214e+04  8.957e+02  13.559  &lt; 2e-16 ***\ntotalSupply 1.076e-02  4.145e-03   2.595  0.00976 ** \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 15780 on 453 degrees of freedom\nMultiple R-squared:  0.01465,   Adjusted R-squared:  0.01247 \nF-statistic: 6.735 on 1 and 453 DF,  p-value: 0.009763\n\n# Plot diagnostics\nplot(regression_model_2_b)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n# Create a scatter plot\nlibrary(ggplot2)\n\nscatter_plot_2_b &lt;- ggplot(combined_data_2b_wide, aes(x = totalSupply, y = adjIncomeCapita )) +\n  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha\n  labs(title = \"Effect of gig totalDemand on adjIncomeCapita\",\n       x = \"totalSupply\",\n       y = \"adjIncomeCapita\") +\n  theme_minimal()  # Use a minimal theme for a cleaner look\n\n# Display the plot\nprint(scatter_plot_2_b)\n\n\n\n\n\n\n\n\n\n\nModel_2_c: totalDemand ~ serviceICTExports + totalWageSalWorkers\n\n# Model_2_c\n\n# Check if both indicators are available for each country and year\ncombined_data_2c &lt;- combined_data %&gt;%\n  filter(indicator %in% c(\"totalDemand\", \"serviceICTExports\", \"totalWageSalWorkers\" )) %&gt;%\n  filter(country %in% c(\"Chile\", \"Argentina\", \"Brazil\", \"Bolivia\", \"Peru\", \"Venezuela\", \"Uruguay\", \"Ecuador\", \"Mexico\", \"Panama\", \"Nicaragua\", \"Costa Rica\", \"Honduras\"))\n\n# Reshaping the data to have one row per country-year with separate columns for each indicator\ncombined_data_2c_wide &lt;- combined_data_2c %&gt;%\n  pivot_wider(names_from = indicator, values_from = value) %&gt;%\n  filter(!is.na(totalDemand) & !is.na(serviceICTExports) & !is.na(totalWageSalWorkers))\n  \ncombined_data_2c_wide &lt;- combined_data_2c_wide[combined_data_2c_wide$totalDemand &lt;= 1e+06, ]\n\n# Run the regression model\nregression_model_2_c &lt;- lm(`totalDemand` ~ `serviceICTExports` + `totalWageSalWorkers`, data = combined_data_2c_wide)\n\n# Display the summary of the regression model\nsummary(regression_model_2_c)\n\n\nCall:\nlm(formula = totalDemand ~ serviceICTExports + totalWageSalWorkers, \n    data = combined_data_2c_wide)\n\nResiduals:\n   Min     1Q Median     3Q    Max \n-46595  -3586   -123   4173  41461 \n\nCoefficients:\n                      Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)          3.456e+03  8.423e+03   0.410    0.683    \nserviceICTExports    1.562e-06  1.725e-07   9.053 1.26e-12 ***\ntotalWageSalWorkers -4.590e+01  1.493e+02  -0.307    0.760    \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 13160 on 57 degrees of freedom\nMultiple R-squared:  0.6468,    Adjusted R-squared:  0.6344 \nF-statistic: 52.18 on 2 and 57 DF,  p-value: 1.318e-13\n\n# Plot diagnostics\nplot(regression_model_2_c)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n# Create a scatter plot\nlibrary(ggplot2)\n\nscatter_plot_2_c &lt;- ggplot(combined_data_2c_wide, aes(x = serviceICTExports, y = totalDemand )) +\n  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha\n  labs(title = \"Effect of serviceICTExports on gig economy totalDemand\",\n       x = \"serviceICTExports\",\n       y = \"totalDemand\") +\n  theme_minimal()  # Use a minimal theme for a cleaner look\n\n# Display the plot\nprint(scatter_plot_2_c)\n\n\n\n\n\n\n\nscatter_plot_2_c_i &lt;- ggplot(combined_data_2c_wide, aes(x = totalWageSalWorkers, y = totalDemand )) +\n  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha\n  labs(title = \"Effect of totalWageSalWorkers on gig economy totalDemand\",\n       x = \"totalWageSalWorkers\",\n       y = \"totalDemand\") +\n  theme_minimal()  # Use a minimal theme for a cleaner look\n\n# Display the plot\nprint(scatter_plot_2_c_i)\n\n\n\n\n\n\n\n\n\n\nModel_2_d: totalSupply ~ serviceICTExports + totalUnemployment\n\n# Model_2_d\n\n# Check if both indicators are available for each country and year\ncombined_data_2d &lt;- combined_data %&gt;%\n  filter(indicator %in% c(\"totalSupply\", \"serviceICTExports\", \"totalUnemployment\" )) %&gt;%\n  filter(country %in% c(\"Chile\", \"Argentina\", \"Brazil\", \"Bolivia\", \"Peru\", \"Venezuela\", \"Uruguay\", \"Ecuador\", \"Mexico\", \"Panama\", \"Nicaragua\", \"Costa Rica\", \"Honduras\"))\n\n# Reshaping the data to have one row per country-year with separate columns for each indicator\ncombined_data_2d_wide &lt;- combined_data_2d %&gt;%\n  pivot_wider(names_from = indicator, values_from = value) %&gt;%\n  filter(!is.na(totalSupply) & !is.na(serviceICTExports) & !is.na(totalUnemployment))\n  \ncombined_data_2d_wide &lt;- combined_data_2d_wide[combined_data_2d_wide$totalSupply &lt;= 1e+06, ]\n\n# Run the regression model\nregression_model_2_d &lt;- lm(`totalSupply` ~ `serviceICTExports` + `totalUnemployment`, data = combined_data_2d_wide)\n\n# Display the summary of the regression model\nsummary(regression_model_2_d)\n\n\nCall:\nlm(formula = totalSupply ~ serviceICTExports + totalUnemployment, \n    data = combined_data_2d_wide)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-209372  -53819  -26412   30463  469295 \n\nCoefficients:\n                    Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)       -1.636e+04  4.996e+04  -0.328 0.744831    \nserviceICTExports  6.720e-06  1.781e-06   3.773 0.000488 ***\ntotalUnemployment  9.278e+03  6.117e+03   1.517 0.136676    \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 137800 on 43 degrees of freedom\nMultiple R-squared:  0.3038,    Adjusted R-squared:  0.2715 \nF-statistic: 9.384 on 2 and 43 DF,  p-value: 0.0004152\n\n# Plot diagnostics\nplot(regression_model_2_d)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n# Create a scatter plot\nlibrary(ggplot2)\n\nscatter_plot_2_d &lt;- ggplot(combined_data_2d_wide, aes(x = serviceICTExports, y = totalSupply )) +\n  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha\n  labs(title = \"Effect of serviceICTExports on gig economy totalDemand\",\n       x = \"serviceICTExports\",\n       y = \"totalSupply\") +\n  theme_minimal()  # Use a minimal theme for a cleaner look\n\n# Display the plot\nprint(scatter_plot_2_d)\n\n\n\n\n\n\n\nscatter_plot_2_d_i &lt;- ggplot(combined_data_2d_wide, aes(x = totalUnemployment, y = totalSupply )) +\n  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha\n  labs(title = \"Effect of totalWageSalWorkers on gig economy totalDemand\",\n       x = \"totalUnemployment\",\n       y = \"totalSupply\") +\n  theme_minimal()  # Use a minimal theme for a cleaner look\n\n# Display the plot\nprint(scatter_plot_2_d_i)"
+  },
+  {
+    "objectID": "Final Project/Final_Project-PSCI3200.html",
+    "href": "Final Project/Final_Project-PSCI3200.html",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "",
+    "text": "I want to understand how economic wellness (increase in income, debt rate, consumer spending) is affected by the prevalence and frequency of digital gig economy.\nI hypothesize that countries where digital and gig economy activities are higher are associated with greater levels of economic wellness. People who participate in the digital gig economy experience greater economic wellness than those who do not."
+  },
+  {
+    "objectID": "Final Project/Final_Project-PSCI3200.html#hypothesis",
+    "href": "Final Project/Final_Project-PSCI3200.html#hypothesis",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "",
+    "text": "I want to understand how economic wellness (increase in income, debt rate, consumer spending) is affected by the prevalence and frequency of digital gig economy.\nI hypothesize that countries where digital and gig economy activities are higher are associated with greater levels of economic wellness. People who participate in the digital gig economy experience greater economic wellness than those who do not."
+  },
+  {
+    "objectID": "Final Project/Final_Project-PSCI3200.html#rationale",
+    "href": "Final Project/Final_Project-PSCI3200.html#rationale",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "Rationale",
+    "text": "Rationale\nGig economy work is supplementary, which allows for more opportunities to match labor supply with demand, creating additional value transactions.\nDigital gig economy work also enables increased flexibility, as location constrained individuals such as mothers caring for children, handicapped individuals are able to perform digital tasks that brings value transfer.\nDigital gig economy work allows for flexibility, which helps individuals prioritize social and health commitments during the working day, while not seriously jeopardizing their long-term economic prospects."
+  },
+  {
+    "objectID": "Final Project/Final_Project-PSCI3200.html#questions",
+    "href": "Final Project/Final_Project-PSCI3200.html#questions",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "Questions",
+    "text": "Questions\nDoes the type of digital gig work affect the magnitude of economic wellness benefits experienced?\nHow can we separate the confounding effects of highly-developed digital infrastructure from the direct effects of digital gig work that is flexible and accessible?\nDoes economic wellness translate to overall health/human wellness highlighted in the SDGs?\nIs digital gig work available fairly/reasonably available to everyone with internet access, or are there asymmetric market dynamics at play that skew gigs available and the distribution of digital gig work opportunities?"
+  },
+  {
+    "objectID": "Final Project/Final_Project-PSCI3200.html#datasets",
+    "href": "Final Project/Final_Project-PSCI3200.html#datasets",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "Datasets:",
+    "text": "Datasets:\nOxford Labor Index Information (http://onlinelabourobservatory.org/oli-demand/) OLI FigShare Dataset (https://figshare.com/articles/dataset/Online_Labour_Index_Measuring_the_Online_Gig_Economy_for_Policy_and_Research/3761562?file=25560452)"
+  },
+  {
+    "objectID": "Final Project/Final_Project-PSCI3200.html#appendix",
+    "href": "Final Project/Final_Project-PSCI3200.html#appendix",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "Appendix:",
+    "text": "Appendix:\nGad Allon - Behavioral and Economic Drivers of Gig Economy (https://pubsonline.informs.org/doi/abs/10.1287/msom.2023.1191?journalCode=msom)\nThe echo: false option disables the printing of code (only output is displayed)."
+  },
+  {
+    "objectID": "psci3200_jerrycai_quarto/about.html",
+    "href": "psci3200_jerrycai_quarto/about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "psci3200_jerrycai_quarto/index.html",
+    "href": "psci3200_jerrycai_quarto/index.html",
+    "title": "psci3200_jerrycai_quarto",
+    "section": "",
+    "text": "This is a Quarto website.\n\n1 + 1 + 3\n\n[1] 5"
+  },
+  {
+    "objectID": "Final Project/Github_Dummy.html",
+    "href": "Final Project/Github_Dummy.html",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "",
+    "text": "I want to understand how economic wellness (increase in income, debt rate, consumer spending) is affected by the prevalence and frequency of digital gig economy.\nI hypothesize that countries where digital and gig economy activities are higher are associated with greater levels of economic wellness. People who participate in the digital gig economy experience greater economic wellness than those who do not."
+  },
+  {
+    "objectID": "Final Project/Github_Dummy.html#hypothesis",
+    "href": "Final Project/Github_Dummy.html#hypothesis",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "",
+    "text": "I want to understand how economic wellness (increase in income, debt rate, consumer spending) is affected by the prevalence and frequency of digital gig economy.\nI hypothesize that countries where digital and gig economy activities are higher are associated with greater levels of economic wellness. People who participate in the digital gig economy experience greater economic wellness than those who do not."
+  },
+  {
+    "objectID": "Final Project/Github_Dummy.html#rationale",
+    "href": "Final Project/Github_Dummy.html#rationale",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "Rationale",
+    "text": "Rationale\nGig economy work is supplementary, which allows for more opportunities to match labor supply with demand, creating additional value transactions.\nDigital gig economy work also enables increased flexibility, as location constrained individuals such as mothers caring for children, handicapped individuals are able to perform digital tasks that brings value transfer.\nDigital gig economy work allows for flexibility, which helps individuals prioritize social and health commitments during the working day, while not seriously jeopardizing their long-term economic prospects."
+  },
+  {
+    "objectID": "Final Project/Github_Dummy.html#questions",
+    "href": "Final Project/Github_Dummy.html#questions",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "Questions",
+    "text": "Questions\nDoes the type of digital gig work affect the magnitude of economic wellness benefits experienced?\nHow can we separate the confounding effects of highly-developed digital infrastructure from the direct effects of digital gig work that is flexible and accessible?\nDoes economic wellness translate to overall health/human wellness highlighted in the SDGs?\nIs digital gig work available fairly/reasonably available to everyone with internet access, or are there asymmetric market dynamics at play that skew gigs available and the distribution of digital gig work opportunities?"
+  },
+  {
+    "objectID": "Final Project/Github_Dummy.html#datasets",
+    "href": "Final Project/Github_Dummy.html#datasets",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "Datasets:",
+    "text": "Datasets:\nOxford Labor Index Information (http://onlinelabourobservatory.org/oli-demand/) OLI FigShare Dataset (https://figshare.com/articles/dataset/Online_Labour_Index_Measuring_the_Online_Gig_Economy_for_Policy_and_Research/3761562?file=25560452)"
+  },
+  {
+    "objectID": "Final Project/Github_Dummy.html#appendix",
+    "href": "Final Project/Github_Dummy.html#appendix",
+    "title": "PSCI_3200: Final Project Milestone 1 - Research Question and Dataset",
+    "section": "Appendix:",
+    "text": "Appendix:\nGad Allon - Behavioral and Economic Drivers of Gig Economy (https://pubsonline.informs.org/doi/abs/10.1287/msom.2023.1191?journalCode=msom)\nThe echo: false option disables the printing of code (only output is displayed)."
   }
 ]
