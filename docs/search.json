@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "psci3200_jerrycai-demo",
+    "title": "Final Project (Due Wednesday, May 10th)",
     "section": "",
-    "text": "Date: April 23, 2024 This is a Quarto website.\n\n1 + 1 + 3 + 4\n\n[1] 9"
+    "text": "This is the final project submission on Quarto\nJerry Cai\n\nR Code\n\nlibrary(ggplot2)\nlibrary(readr)\nlibrary(ggdag)\n\n\nAttaching package: 'ggdag'\n\n\nThe following object is masked from 'package:stats':\n\n    filter\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.3     ✔ stringr   1.5.0\n✔ forcats   1.0.0     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n\n\n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks ggdag::filter(), stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(tidyr)\nlibrary(dplyr)\nlibrary(gt)\nlibrary(modelsummary)"
   },
   {
     "objectID": "about.html",
