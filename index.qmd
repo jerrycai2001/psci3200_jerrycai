@@ -47,25 +47,21 @@ The existing body of research seeks to understand the drivers of the gig economy
 
 # Theory and Hypotheses
 
-## Hypothesis 1: Countries with greater digital gig economy participation have greater financial wellness. 
+Hypothesis 1: Countries with greater digital gig economy participation tend to see greater individual financial health. 
 
-## Hypothesis 2: Countries with high access to internet technologies and higher overall wage/salaried employment will experience the highest frequency of digital gig platform usage.
+Hypothesis 2: Countries with high access to internet technologies and higher overall wage/salaried employment will experience the highest frequency of digital gig platform usage.
 
-Rationale 1: Online gig/freelance work platforms are more efficient mechanisms of value creation, enabling supply to quickly meet demand. Greater efficiency takes less energy and time to create economic value, allowing for more overall value creation and therefore long-term freedom and flexibility to pursue activities that create greater fulfillment.
+Rationale 1: Online gig/freelance work platforms are more efficient mechanisms of value creation, enabling supply to quickly meet demand through digital means. Greater efficiency takes less energy and time to create economic value, allowing for more overall value creation and therefore long-term freedom and flexibility to pursue activities that create greater fulfillment.
 
 Marginal economic earnings measures the comparative difference in outcomes between digital gig economy workers. Ex. A gig worker in Africa would derive greater marginal benefit from economic earnings than a gig worker in the US. Greater economic disparities/instability in a given country will cause more individuals to pursue freelance/gig marketplace platform work, since the marginal benefit is comparatively higher. In countries with lower wage/salary employment rates, gig platform employment is the next best alternative for economic opportunities. Additionally, countries of greater information technology (IT) are correlated with greater technology investment, growth and overall ecosystem dynamics that enable efficient value creation and exchange. 
 
 Rationale 2:
-A report by Manyika et al.(2016) that describes participation in the gig economy, documenting 160+ million individuals participate in this sector, estimate that a substantial fraction (30%) of workers earn income via gig workout of necessity (because of a lack of better employment options). Specifically, we estimate that, on average, a 1% increase in a county’s reported unemployment rate is associated with an approximate 21.8% increase in the number of residents active on the platform and an approximate 15% increase in the total volume of bids submitted by those residents, translating to approximately $1.8 million in additional annual wages earned on the platform
-
-Specifically, counties with better internet access, with residents that have a lower proportion of geographically proximate social connections, and with a younger, more female, and more educated population are most likely to experience gig-economy opt-in following local unemployment shocks. Importantly, whereas some of these factors may be influenced by policy makers (e.g., education levels may be increased via training initiatives, and internet access may be improved through investment in internet infrastructure)
+A report by Manyika et al (2016), which documented 160+ million individuals participating in the digital gig economy, estimates that a substantial fraction (30%) of workers earn income via gig workout of necessity (because of a lack of better employment options). Specifically, an estimated 1% increase in a county’s reported unemployment rate is associated with an approximate 21.8% increase in the number of residents active on the platform and an approximate 15% increase in the total volume of bids submitted by those residents, translating to approximately $1.8 million in additional annual wages earned on the platform. It has been observed that counties with better internet access and digital skills are most likely to experience gig-economy opt-in following local unemployment shocks. Participation in the gig economy may also be influenced by policy interventions (e.g., education levels may be increased via training initiatives, and internet access may be improved through investment in internet infrastructure).
 
 # Data Description
 
-
-
+## A - Data Description
 The variables I will examine in my dataset combined_data are:
-
 totalSupply, totalDemand
 adjIncomeCapita
 commExports, serviceICTExports
@@ -89,12 +85,15 @@ Internet accessibility and infrastructure: service communications/technology exp
 Total employment rates of wage/salaried workers: total unemployment (totalUnemployment)
 
 
-To test hypothesis 1, I chose variables that closely correlated to digital gig economy participation have greater financial wellness, which are  gig economy participation count (gigEconCount) and adjusted income per capita (adjIncomeCapita). Gig economic participation count is calculated via survey data from the OLI database, which surveyed workers on digital platform about their country of residence and which day this interaction was recorded. Such was replicated each day over 4 years, which serve to reflect to total amount of gig economy activity in a given year. Adjusted income per capita is a standard WHO development indicator, which is mean income per capita adjusted into USD. 
+To test hypothesis 1, I chose variables that represented digital gig economy participation and indicators of  financial health: which are  gig economy worker participation count (totalSupply), gig economy job listing count (totalSupply) and adjusted income per capita (adjIncomeCapita). Gig economic participation count is calculated via survey data from the OLI database, which surveyed workers on digital platform about their country of residence and which day this interaction was recorded. Such was replicated each day over 4 years, which serve to reflect to total amount of gig economy activity in a given year. Adjusted income per capita is a standard WHO development indicator, which is mean income per capita adjusted into USD. 
 
-For further empirical extension in hypothesis 2, I chose variables that are effectors of gig economy participation count (gigEconCount), such as accessibility to digital technologies and pressures from external wage/salaried employment opportunities ( totalWageSalWorkersPercent). I will note there is a possible interaction between the later 2 variables.
+For further empirical extension in hypothesis 2, I chose variables that are effectors of gig economy participation count (totalSupply), such as digital technology service exports (serviceICTExports) and overall total unemployment (totalUnemployment). I will note there is a possible interaction between the later 2 variables.
 
 ## Loading in dataset
 ```{r}
+#| echo: false
+#| warning: false
+
 
 # Write combined_data as csv
 input_file_path_combined <- "/Users/jycai/Documents/GitHub/psci3200_jerrycai/combined_data.csv"
@@ -117,6 +116,9 @@ code_to_name <- c(
 
 ## Data variables description
 ```{r}
+#| echo: false
+#| warning: false
+
 
 combined_data_2 <- combined_data %>%
   filter(indicator %in% c("adjIncomeCapita", "serviceICTExports", "totalUnemployment", "totalDemand", "totalSupply"))
@@ -168,16 +170,104 @@ print(summary_table)
 
 # Research Design
 
-```{r}
+## B - Specify the main regression model 
+The regression model used will be the standard linear regression model. This is sufficient for such application given the relatively large sample and population size of individuals sampled from respective countries. There were a total of  n = 149 different countries surveyed, with data across 4 years (2016:2020), representing 596 observations for each indicator. The regression model is robust for assessing effect strength of gig economy participation on individual financial health, given that financial health has multiple other external covariate effectors such as individual spending rates, consumer price index, cost of living, loan/credit lines and strength of individual long-term investments. Also affecting individual financial health, potential covariates for gig economy participation include total unemployment rate and strength of traditional employment sectors. An individual’s financial health is greatly effected by outflows, such as living expenses, tax rates which influence the remaining net balance for long-term financial stability. Given the complex effects that external financial institutions have on an individual’s financial health,  we are controlling strictly for income sources, in which adjusted income per capita can reasonably represent average incomes. 
 
-```
-
-$$
-\text{adjIncomeCapita} = \beta_0 + \beta_1 \times \text{totalSupply} + \epsilon
-$$
+### Total Demand Model
 $$
 \text{adjIncomeCapita} = \beta_0 + \beta_1 \times \text{totalDemand} + \epsilon
 $$
+# Model_2_a: adjIncomeCapita` ~ `totalDemand
+```{r}
+#| echo: false
+#| warning: false
+#| 
+# Model_2_a
+
+# Check if both indicators are available for each country and year
+combined_data_2a <- combined_data %>%
+  filter(indicator %in% c("adjIncomeCapita", "totalDemand"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2a_wide <- combined_data_2a %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(adjIncomeCapita) & !is.na(totalDemand))
+  
+combined_data_2a_wide <- combined_data_2a_wide[combined_data_2a_wide$totalDemand <= 2.5e+05, ]
+
+# Run the regression model
+regression_model_2_a <- lm(`adjIncomeCapita` ~ `totalDemand`, data = combined_data_2a_wide)
+
+# Display the summary of the regression model
+summary(regression_model_2_a)
+
+# Plot diagnostics
+plot(regression_model_2_a)
+
+# Create a scatter plot
+library(ggplot2)
+
+scatter_plot_2_a <- ggplot(combined_data_2a_wide, aes(x = totalDemand, y = adjIncomeCapita )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of gig totalDemand on adjIncomeCapita",
+       x = "totalDemand",
+       y = "adjIncomeCapita") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_a)
+
+```
+
+### Total Supply Model
+$$
+\text{adjIncomeCapita} = \beta_0 + \beta_1 \times \text{totalSupply} + \epsilon
+$$
+
+# Model_2_b: adjIncomeCapita` ~ `totalSupply
+```{r}
+#| echo: false
+#| warning: false
+#| 
+
+# Model_2_b
+
+# Check if both indicators are available for each country and year
+combined_data_2b <- combined_data %>%
+  filter(indicator %in% c("adjIncomeCapita", "totalSupply"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2b_wide <- combined_data_2b %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(adjIncomeCapita) & !is.na(totalSupply))
+  
+combined_data_2b_wide <- combined_data_2b_wide[combined_data_2b_wide$totalSupply <= 1e+06, ]
+
+# Run the regression model
+regression_model_2_b <- lm(`adjIncomeCapita` ~ `totalSupply`, data = combined_data_2b_wide)
+
+# Display the summary of the regression model
+summary(regression_model_2_b)
+
+# Plot diagnostics
+plot(regression_model_2_b)
+
+# Create a scatter plot
+library(ggplot2)
+
+scatter_plot_2_b <- ggplot(combined_data_2b_wide, aes(x = totalSupply, y = adjIncomeCapita )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of gig totalDemand on adjIncomeCapita",
+       x = "totalSupply",
+       y = "adjIncomeCapita") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_b)
+
+```
+
+
 
 Additive model
 $$
@@ -188,9 +278,134 @@ $$
 \text{totalSupply} = \beta_0 + \beta_1 \times \text{serviceICTExports} \times \beta_2 \times \text{totalUnemployment} +\epsilon
 $$
 
+
+
+## Shortcoming Analysis
+In terms of the model’s shortcomings, a single indicator such as adjusted income per capita does not fully capture an individual’s financial wellness or ability to maintain financial stability. Even amongst total available income streams, would only have proportionally significant effects on lower adjusted income per capita. Only approximately 10%-30% of sampled countries’ populations have secondary income streams from the gig economy , meaning that the proportional contribution of digital gig economy income would be diminished in a per-capita metric that applies to millions of non-gig workers. 
+
 # Findings
+
+Given the multivariate effects on adjusted income per capita, the study found no strong conclusive evidence that participation in the digital gig economy significantly impacts individual financial health through adjusted annual income. This effect was weaker than previously anticipated,  due to the influence of larger macro variables such as taxation policy, overall economic health, and local industrial specialization. Additionally, the presence of outlier clusters displaying both low participation in the gig economy and varying levels of adjusted income per capita complicates the ability to discern a clear relationship. A further refined analysis, focusing specifically on Latin American and Asian countries, provided more controlled data yet still did not yield a validly significant relationship. The regression model, as indicated by poorly representative residuals, suggests that the impact of gig economy worker participation on individual wellness cannot be considered statistically significant.
 
 # Empirical Extension
 
+The sample size from the World Bank's development indicators spans individuals of varying financial wellness, encompassing the most vulnerable groups as characterized by the United Nations. These groups include rural women, female-led micro, small, and medium enterprises (MSMEs), female entrepreneurs, and gender-based violence (GBV) victims, along with age-vulnerable groups such as the elderly or youth, and those from specific geographical locations like rural, urban, or peri-urban areas, including farmers. Additionally, those in low-income or financially distressed situations are also considered vulnerable. However, the dataset lacks additional controls to filter for these vulnerable populations, which necessitates further investigation. There are covariate relationships noted, such as digital gig workers predominantly being male, who have access to internet infrastructure and possess basic digital literacy skills—as indicated by Huang. Conversely, females and geographically isolated populations are less likely to benefit from these prerequisites, thereby impacting their participation in the online gig economy.
+
+Hypothesis 2 serves to focus on the effect of higher internet service exports and the total unemployment on gig economy worker participation.
+
+To study their effects on gig economy participation, it appears that access to internet technology, higher internet export rates and the overall unemployments are strong effectors of totalSupply. Gig economy participation requires robust digital internet infrastructure to support computers and devices used for working remote jobs. The majority of gig economy jobs across the globe are online service exports (as reflected in the statistic) in roles such as software engineering, data entry and creative multimedia. Additionally, its important to examine surrounding macroeconomic contexts, such as overall employment rate in wage salaried jobs. It stands to reason that in countries with lower employment in wage/salaried jobs and higher access to digital internet technologies, that gig economy participation will be much higher, given individual needs to be economically stable. These comparative alternative income sources would be appealing to individuals who cannot find a traditional wage/salaried job. 
+
+Income from online gig economy positions are assumed to be strongly correlated to a country’s internet/technology service exports, given that 80%-90% of such exports from developing countries fall under the digital gig economy criteria. We are hoping to discern the effector interaction for total gig economy supply and demand, which seem to be correlated with internet/technology service exports and total nationwide unemployment rate. Such insight into the interactions would help inform policy decisions on the degree of resource allocation. 
+
+# Model_2_c: totalSupply ~ serviceICTExports * totalUnemployment
+
+$$
+\text{totalSupply} = \beta_0 + \beta_1 \times \text{serviceICTExports} \times \beta_2 \times \text{totalUnemployment}+ \epsilon
+$$
+
+```{r}
+# Model_2_c
+
+# Check if both indicators are available for each country and year
+combined_data_2c <- combined_data %>%
+  filter(indicator %in% c("totalSupply", "serviceICTExports", "totalUnemployment" ))
+  # filter(country %in% c("Chile", "Argentina", "Brazil", "Bolivia", "Peru", "Venezuela", "Uruguay", "Ecuador", "Mexico", "Panama", "Nicaragua", "Costa Rica", "Honduras"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2c_wide <- combined_data_2c %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(totalSupply) & !is.na(serviceICTExports) & !is.na(totalUnemployment))
+  
+combined_data_2c_wide <- combined_data_2c_wide[combined_data_2c_wide$totalSupply <= 1e+06, ]
+
+# Run the regression model
+regression_model_2_c <- lm(`totalSupply` ~ `serviceICTExports` + `totalUnemployment`, data = combined_data_2c_wide)
+
+# Display the summary of the regression model
+summary(regression_model_2_c)
+
+# Plot diagnostics
+plot(regression_model_2_c)
+
+# Create a scatter plot
+library(ggplot2)
+
+scatter_plot_2_c <- ggplot(combined_data_2c_wide, aes(x = serviceICTExports, y = totalSupply )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of serviceICTExports on gig economy totalSupply",
+       x = "serviceICTExports",
+       y = "totalSupply") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_c)
+
+scatter_plot_2_c_i <- ggplot(combined_data_2c_wide, aes(x = totalUnemployment, y = totalSupply )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of total Unemployment on gig economy totalSupply",
+       x = "totalUnemployment",
+       y = "totalSupply") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_c_i)
+
+```
+
+# Model_2_d: totalSupply ~ serviceICTExports + totalUnemployment
+$$
+\text{totalSupply} = \beta_0 + \beta_1 \times \text{serviceICTExports} + \beta_2 \times \text{totalUnemployment}+ \epsilon
+$$
+```{r}
+# Model_2_d
+
+# Check if both indicators are available for each country and year
+combined_data_2d <- combined_data %>%
+  filter(indicator %in% c("totalSupply", "serviceICTExports", "totalUnemployment" ))
+  # filter(country %in% c("Chile", "Argentina", "Brazil", "Bolivia", "Peru", "Venezuela", "Uruguay", "Ecuador", "Mexico", "Panama", "Nicaragua", "Costa Rica", "Honduras"))
+
+# Reshaping the data to have one row per country-year with separate columns for each indicator
+combined_data_2d_wide <- combined_data_2d %>%
+  pivot_wider(names_from = indicator, values_from = value) %>%
+  filter(!is.na(totalSupply) & !is.na(serviceICTExports) & !is.na(totalUnemployment))
+  
+combined_data_2d_wide <- combined_data_2d_wide[combined_data_2d_wide$totalSupply <= 1e+06, ]
+
+# Run the regression model
+regression_model_2_d <- lm(`totalSupply` ~ `serviceICTExports` + `totalUnemployment`, data = combined_data_2d_wide)
+
+# Display the summary of the regression model
+summary(regression_model_2_d)
+
+# Plot diagnostics
+plot(regression_model_2_d)
+
+# Create a scatter plot
+library(ggplot2)
+
+scatter_plot_2_d <- ggplot(combined_data_2d_wide, aes(x = serviceICTExports, y = totalSupply )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of serviceICTExports on gig economy totalDemand",
+       x = "serviceICTExports",
+       y = "totalSupply") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_d)
+
+scatter_plot_2_d_i <- ggplot(combined_data_2d_wide, aes(x = totalUnemployment, y = totalSupply )) +
+  geom_point(alpha = 0.6) +  # Adjust point transparency with alpha
+  labs(title = "Effect of total Unemployment on gig economy total supply",
+       x = "totalUnemployment",
+       y = "totalSupply") +
+  theme_minimal()  # Use a minimal theme for a cleaner look
+
+# Display the plot
+print(scatter_plot_2_d_i)
+
+```
+
+
 # Discussion and Policy Implications
+To enhance the potential benefits of digital gig economy participation, policy should continue investing in internet and technology service exports, alongside providing incentives for workers in participating countries. Particularly, countries with unstable economic environments are encouraged to attract more digital gig economic opportunities to increase individual participation. The next steps involve further segmenting the countries surveyed into emerging economies, such as those in Latin America, Africa, and Asia. Subsequent research will include conducting similar regression analyses but focusing on financial institution metrics such as total savings, credit and loan rates, and investment strengths. Additionally, a difference of difference analysis between males and females working in the gig economy will be conducted to determine if the effect on financial health is greater for vulnerable groups. Further research will also explore specific community interventions, such as distributing free computer devices, constructing internet infrastructure, and enhancing digital education, to support economic participation and benefit accrual from the gig economy.
 
